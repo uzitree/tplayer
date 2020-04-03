@@ -2,10 +2,10 @@
  * @Author: 王嘉炀
  * @Date: 2020-03-29 21:52:10
  */
-const trim = function (string) {
+const trim = function (string: string) {
   return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '')
 }
-export function hasClass (el, cls) {
+export function hasClass (el: HTMLElement, cls: string): boolean {
   if (!el || !cls) return false
   if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.')
   if (el.classList) {
@@ -13,15 +13,15 @@ export function hasClass (el, cls) {
   } else {
     return (' ' + el.className + ' ').indexOf(' ' + cls + ' ') > -1
   }
-};
+}
 
-export function addClass (el, cls) {
+export function addClass (el: HTMLElement, cls: string): void {
   if (!el) return
-  var curClass = el.className
-  var classes = (cls || '').split(' ')
+  let curClass = el.className
+  const classes = (cls || '').split(' ')
 
-  for (var i = 0, j = classes.length; i < j; i++) {
-    var clsName = classes[i]
+  for (let i = 0, j = classes.length; i < j; i++) {
+    const clsName = classes[i]
     if (!clsName) continue
 
     if (el.classList) {
@@ -35,15 +35,15 @@ export function addClass (el, cls) {
   if (!el.classList) {
     el.className = curClass
   }
-};
+}
 
-export function removeClass (el, cls) {
+export function removeClass (el: HTMLElement, cls: string): void {
   if (!el || !cls) return
-  var classes = cls.split(' ')
-  var curClass = ' ' + el.className + ' '
+  const classes = cls.split(' ')
+  let curClass = ' ' + el.className + ' '
 
-  for (var i = 0, j = classes.length; i < j; i++) {
-    var clsName = classes[i]
+  for (let i = 0, j = classes.length; i < j; i++) {
+    const clsName = classes[i]
     if (!clsName) continue
 
     if (el.classList) {
@@ -57,9 +57,9 @@ export function removeClass (el, cls) {
   if (!el.classList) {
     el.className = trim(curClass)
   }
-};
+}
 
-export function append (el, ...args) {
+export function append (el: HTMLElement, ...args: string[] | HTMLElement[]): void {
   let newChild
   for (let k = 0; k < args.length; k += 1) {
     newChild = args[k]

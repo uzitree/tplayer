@@ -4,11 +4,16 @@
  * @Date: 2020-03-29 21:50:17
  */
 import * as Dom from '../../utils/dom'
+import MVPlayer from '../../MVPlayer'
+interface Options{
+  src: string;
+}
 class Player {
-  constructor (mvp, el, options, ready) {
-    this.mvp = mvp
-    this.el = el
-    this.video = null
+
+  public video!: HTMLVideoElement
+
+  constructor (public mvp: MVPlayer, public el: HTMLElement, public options: Options) {
+
     this.options = this.initOptions(options)
     // 创建完就会得到video对象
     this.createVideoDom()
@@ -17,27 +22,28 @@ class Player {
   }
   // {sceneId:"v1", sceneName:"赛车", sceneFilePath:"./video/960p.mp4", sceneType:"Video",initFov:110}
 
-  initOptions (options) {
+  initOptions (options: Options): Options {
     const defaultOptions = {
       title: 'AKB48演出',
       src: 'akb-4k-4x1080p.mp4',
       type: 'live'
     }
+    console.log(options)
     return defaultOptions
-  }
+  }  
 
-  createVideoDom () {
+  createVideoDom (): void {
     const videoHtml = `
       <div class="mvp-constainer">
         <div class="mvp-video"><video webkit-playsinline="true" playsinline="true" controls="controls" ></video></div>
       </div>
     `
     Dom.append(this.el, videoHtml)
-    this.video = this.el.querySelector('video')
+    this.video = this.el.querySelector('video') as HTMLVideoElement
     this.video.src = this.options.src
   }
 
-  onVideoEvent () {
+  onVideoEvent (): void {
     this.video.addEventListener('canplaythrough', function () {
       console.log('canplaythrough')
     })
