@@ -1,0 +1,93 @@
+{
+  "id": "1735140",
+  "name": "typlayer",
+  "font_family": "typfont",
+  "css_prefix_text": "typicon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "2154945",
+      "name": "播放器-播放_44",
+      "font_class": "bofangqi-bofang",
+      "unicode": "e6a4",
+      "unicode_decimal": 59044
+    },
+    {
+      "icon_id": "2154946",
+      "name": "播放器-暂停_44",
+      "font_class": "bofangqi-zanting",
+      "unicode": "e6a5",
+      "unicode_decimal": 59045
+    },
+    {
+      "icon_id": "2154947",
+      "name": "播放器-下一集_44",
+      "font_class": "bofangqi-xiayiji",
+      "unicode": "e6a6",
+      "unicode_decimal": 59046
+    },
+    {
+      "icon_id": "6598340",
+      "name": "backward",
+      "font_class": "backward",
+      "unicode": "e8ec",
+      "unicode_decimal": 59628
+    },
+    {
+      "icon_id": "6598345",
+      "name": "forward",
+      "font_class": "forward",
+      "unicode": "e8ee",
+      "unicode_decimal": 59630
+    },
+    {
+      "icon_id": "6776386",
+      "name": "声音_实体",
+      "font_class": "shengyin_shiti",
+      "unicode": "eca5",
+      "unicode_decimal": 60581
+    },
+    {
+      "icon_id": "6776437",
+      "name": "声音静音",
+      "font_class": "shengyinjingyin",
+      "unicode": "eca9",
+      "unicode_decimal": 60585
+    },
+    {
+      "icon_id": "7008941",
+      "name": "fullscreen",
+      "font_class": "fullscreen",
+      "unicode": "e6fe",
+      "unicode_decimal": 59134
+    },
+    {
+      "icon_id": "7008972",
+      "name": "narrow",
+      "font_class": "narrow",
+      "unicode": "e711",
+      "unicode_decimal": 59153
+    },
+    {
+      "icon_id": "7008984",
+      "name": "playon_fill",
+      "font_class": "playon_fill",
+      "unicode": "e718",
+      "unicode_decimal": 59160
+    },
+    {
+      "icon_id": "7009018",
+      "name": "switch",
+      "font_class": "switch",
+      "unicode": "e72e",
+      "unicode_decimal": 59182
+    },
+    {
+      "icon_id": "11808715",
+      "name": "横屏放大",
+      "font_class": "scale_big",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    }
+  ]
+}
