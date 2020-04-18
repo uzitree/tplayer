@@ -5,6 +5,8 @@
  */
 import * as DOM from '@/utils/dom'
 import ControlBar from './control-bar'
+import { createTimeRange } from '@/utils/time-ranges.js'
+
 class Player {
   constructor (mvp, el, options = {}, ready) {
     this.mvp = mvp
@@ -158,7 +160,7 @@ class Player {
       console.log('waiting')
     })
     this.video.addEventListener('timeupdate', () => {
-      console.log('timeupdate')
+      // console.log('timeupdate')
     })
 
     this.video.addEventListener('abort', () => {
@@ -202,7 +204,7 @@ class Player {
       }
       // 设置播放器时间
       // this.techCall_('setCurrentTime', seconds)
-      this.player.currentTime = seconds
+      this.video.currentTime = seconds
       this.cache_.initTime = 0
       return
     }
@@ -253,8 +255,49 @@ class Player {
     }
   }
 
+  /**
+   *
+   */
   remainingTime () {
     return this.duration() - this.currentTime()
+  }
+
+  /**
+   * Get a TimeRange object with an array of the times of the video
+   * that have been downloaded. If you just want the percent of the
+   * video that's been downloaded, use bufferedPercent.
+   *
+   * @see [Buffered Spec]{@link http://dev.w3.org/html5/spec/video.html#dom-media-buffered}
+   *
+   * @return {TimeRange}
+   *         A mock TimeRange object (following HTML spec)
+   */
+  buffered () {
+    let buffered = this.video.buffered
+
+    if (!buffered || !buffered.length) {
+      buffered = createTimeRange(0, 0)
+    }
+
+    return buffered
+  }
+
+  /**
+   * Get the ending time of the last buffered time range
+   * This is used in the progress bar to encapsulate all time ranges.
+   *
+   * @return {number}
+   *         The end of the last buffered time range
+   */
+  bufferedEnd () {
+    const buffered = this.buffered()
+    const duration = this.duration()
+    let end = buffered.end(buffered.length - 1)
+
+    if (end > duration) {
+      end = duration
+    }
+    return end
   }
 
   hasStarted (request) {

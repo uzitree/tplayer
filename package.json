@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@tulies/event-middleware": "0.0.1",
+    "global": "^4.4.0",
     "three": "^0.115.0"
   }
 }

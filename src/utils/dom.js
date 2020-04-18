@@ -2,6 +2,8 @@
  * @Author: 王嘉炀
  * @Date: 2020-03-29 21:52:10
  */
+import computedStyle from './computed-style'
+
 const trim = function (string) {
   return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '')
 }
@@ -72,5 +74,153 @@ export function append (el, ...args) {
     } else {
       el.appendChild(newChild)
     }
+  }
+}
+
+/**
+ * Identical to the native `getBoundingClientRect` function, but ensures that
+ * the method is supported at all (it is in all browsers we claim to support)
+ * and that the element is in the DOM before continuing.
+ *
+ * This wrapper function also shims properties which are not provided by some
+ * older browsers (namely, IE8).
+ *
+ * Additionally, some browsers do not support adding properties to a
+ * `ClientRect`/`DOMRect` object; so, we shallow-copy it with the standard
+ * properties (except `x` and `y` which are not widely supported). This helps
+ * avoid implementations where keys are non-enumerable.
+ *
+ * @param  {Element} el
+ *         Element whose `ClientRect` we want to calculate.
+ *
+ * @return {Object|undefined}
+ *         Always returns a plain object - or `undefined` if it cannot.
+ */
+export function getBoundingClientRect (el) {
+  if (el && el.getBoundingClientRect && el.parentNode) {
+    const rect = el.getBoundingClientRect()
+    const result = {};
+
+    ['bottom', 'height', 'left', 'right', 'top', 'width'].forEach(k => {
+      if (rect[k] !== undefined) {
+        result[k] = rect[k]
+      }
+    })
+
+    if (!result.height) {
+      result.height = parseFloat(computedStyle(el, 'height'))
+    }
+
+    if (!result.width) {
+      result.width = parseFloat(computedStyle(el, 'width'))
+    }
+
+    return result
+  }
+}
+
+/**
+ * Represents x and y coordinates for a DOM element or mouse pointer.
+ *
+ * @typedef  {Object} module:dom~Coordinates
+ *
+ * @property {number} x
+ *           x coordinate in pixels
+ *
+ * @property {number} y
+ *           y coordinate in pixels
+ */
+
+/**
+ * Get the pointer position within an element.
+ *
+ * The base on the coordinates are the bottom left of the element.
+ *
+ * @param  {Element} el
+ *         Element on which to get the pointer position on.
+ *
+ * @param  {EventTarget~Event} event
+ *         Event object.
+ *
+ * @return {module:dom~Coordinates}
+ *         A coordinates object corresponding to the mouse position.
+ *
+ */
+export function getPointerPosition (el, event) {
+  const position = {}
+  const box = findPosition(el)
+  const boxW = el.offsetWidth
+  const boxH = el.offsetHeight
+
+  const boxY = box.top
+  const boxX = box.left
+  let pageY = event.pageY
+  let pageX = event.pageX
+
+  if (event.changedTouches) {
+    pageX = event.changedTouches[0].pageX
+    pageY = event.changedTouches[0].pageY
+  }
+
+  position.y = Math.max(0, Math.min(1, ((boxY - pageY) + boxH) / boxH))
+  position.x = Math.max(0, Math.min(1, (pageX - boxX) / boxW))
+
+  return position
+}
+
+/**
+ * Represents the position of a DOM element on the page.
+ *
+ * @typedef  {Object} module:dom~Position
+ *
+ * @property {number} left
+ *           Pixels to the left.
+ *
+ * @property {number} top
+ *           Pixels from the top.
+ */
+
+/**
+ * Get the position of an element in the DOM.
+ *
+ * Uses `getBoundingClientRect` technique from John Resig.
+ *
+ * @see http://ejohn.org/blog/getboundingclientrect-is-awesome/
+ *
+ * @param  {Element} el
+ *         Element from which to get offset.
+ *
+ * @return {module:dom~Position}
+ *         The position of the element that was passed in.
+ */
+export function findPosition (el) {
+  let box
+
+  if (el.getBoundingClientRect && el.parentNode) {
+    box = el.getBoundingClientRect()
+  }
+
+  if (!box) {
+    return {
+      left: 0,
+      top: 0
+    }
+  }
+
+  const docEl = document.documentElement
+  const body = document.body
+
+  const clientLeft = docEl.clientLeft || body.clientLeft || 0
+  const scrollLeft = window.pageXOffset || body.scrollLeft
+  const left = box.left + scrollLeft - clientLeft
+
+  const clientTop = docEl.clientTop || body.clientTop || 0
+  const scrollTop = window.pageYOffset || body.scrollTop
+  const top = box.top + scrollTop - clientTop
+
+  // Android sometimes returns slightly off decimal values, so need to round
+  return {
+    left: Math.round(left),
+    top: Math.round(top)
   }
 }
