@@ -1,7 +1,8 @@
 import * as DOM from '@/utils/dom'
 import '@/assets/css/control-bar.scss'
 import { timeFormat, clamp } from '@/utils/util'
-// import * as Fn from '../../utils/fn.js'
+import * as Fn from '@/utils/fn.js'
+import FullscreenApi from '@/utils/fullscreen-api'
 
 // get the percent width of a time compared to the total end
 const percentify = (time, end) => clamp((time / end) * 100, 0, 100).toFixed(2) + '%'
@@ -11,10 +12,14 @@ class ControlBar {
     console.log('ControlBar -- constructor')
     // Fn.UPDATE_REFRESH_INTERVAL
     // this.updatePlayProgress = Fn.throttle(Fn.bind(this, this.updatePlayProgress), Fn.UPDATE_REFRESH_INTERVAL)
+    this.handleMouseDown = Fn.bind(this, this.handleMouseDown)
+    this.handleMouseMove = Fn.throttle(Fn.bind(this, this.handleMouseMove), Fn.UPDATE_REFRESH_INTERVAL)
+    this.handleMouseUp = Fn.bind(this, this.handleMouseUp)
   }
 
   init (player) {
     this.player = player
+    this.$root = player.$root
     this.createDomHtml()
     this.addEventListener()
     this.onEventListener()
@@ -48,18 +53,80 @@ class ControlBar {
       typLoadProgress: this.el.querySelector('.typ-load-progress'),
       typPlayProgress: this.el.querySelector('.typ-play-progress'),
       typPlayCurrent: this.el.querySelector('.typ-play-current'),
-      typProgressControl: this.el.querySelector('.typ-progress-control')
+      typProgressControl: this.el.querySelector('.typ-progress-control'),
+      typFullscreenControl: this.el.querySelector('.typ-fullscreen-control')
     }
   }
 
   addEventListener () {
+    this.el.addEventListener('click', (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      this.player.reportUserActivity()
+    }, false)
+    this.el.addEventListener('mousemove', (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      this.player.reportUserActivity()
+    }, false)
+    this.el.addEventListener('touchmove', (event) => {
+      event.preventDefault()
+      event.stopPropagation()
+      this.player.reportUserActivity()
+    }, false)
     this.cel.typPlayControl.addEventListener('click', () => {
       if (this.player.video.paused) {
         this.player.video.play()
       } else {
         this.player.video.pause()
       }
-    })
+    }, false)
+
+    // 得到需要全屏的el对象
+    this.fullEl = this.player.video
+
+    // 如果支持全屏API的话
+    if (FullscreenApi.requestFullscreen) {
+      this.fullEl.addEventListener(FullscreenApi.fullscreenchange, () => {
+      // this.handleFullscreenChange()
+        const el = this.fullEl
+        let isFs = document[FullscreenApi.fullscreenElement] === el
+        if (!isFs && el.matches) {
+          isFs = el.matches(':' + FullscreenApi.fullscreen)
+        } else if (!isFs && el.msMatchesSelector) {
+          isFs = el.msMatchesSelector(':' + FullscreenApi.fullscreen)
+        }
+        this.player.isFullscreen(isFs)
+      })
+    }
+
+    this.cel.typFullscreenControl.addEventListener('click', () => {
+      if (FullscreenApi.requestFullscreen) {
+        this.handleFullscreenChange()
+      } else {
+        // this.fullEl.enterFullScreen()
+        if (this.fullEl.webkitEnterFullscreen || this.fullEl.enterFullScreen) {
+          this.fullEl.webkitEnterFullscreen && this.fullEl.webkitEnterFullscreen()
+          this.fullEl.enterFullScreen && this.fullEl.enterFullScreen()
+        } else {
+          // 不支持全屏的回调
+          console.log('不支持全屏的回调')
+        }
+
+        // 没有全屏事件的时候
+        // if (this.fullEl.requestFullscreen) {
+        //   this.fullEl.requestFullscreen()
+        // } else if (this.fullEl.mozRequestFullScreen) {
+        //   this.fullEl.mozRequestFullScreen()
+        // } else if (this.fullEl.msRequestFullscreen) {
+        //   this.fullEl.msRequestFullscreen()
+        // } else if (this.fullEl.webkitRequestFullscreen) {
+        //   this.fullEl.webkitRequestFullScreen()
+        // } else {
+        //   console.log('不支持全屏相关事件')
+        // }
+      }
+    }, false)
   }
 
   onEventListener () {
@@ -87,13 +154,11 @@ class ControlBar {
       this.updateDurationTimeContent()
     })
     this.player.video.addEventListener('progress', () => {
-      console.log(1212)
       this.updateLoadProgress()
     })
 
-    this.cel.typPlayCurrent.addEventListener('mousedown', this.handleMouseDown.bind(this), false)
-
-    this.cel.typProgressControl.addEventListener('mouseup', this.handleMouseUp.bind(this), false)
+    this.cel.typProgressControl.addEventListener('mousedown', this.handleMouseDown, false)
+    this.cel.typProgressControl.addEventListener('touchstart', this.handleMouseDown, false)
   }
 
   // 更新当前时间
@@ -123,7 +188,7 @@ class ControlBar {
 
   // 更新加载进度
   updateLoadProgress () {
-    console.log('updateProgress')
+    // console.log('updateProgress')
     // const buffered = this.player.buffered()
     const bufferedEnd = this.player.bufferedEnd()
     // const duration = (liveTracker && liveTracker.isLive()) ? liveTracker.seekableEnd() : this.player_.duration()
@@ -160,23 +225,42 @@ class ControlBar {
    * @listens mousedown
    */
   handleMouseDown (event) {
-    // const seekBarRect = DOM.getBoundingClientRect(this.cel.typPlayCurrent)
-    // const seekBarPoint = DOM.getPointerPosition(this.cel.typPlayCurrent, event)
-
-    // console.log(seekBarRect, seekBarPoint)
+    event.preventDefault()
+    event.stopPropagation()
+    // const typProgressControlRect = DOM.getBoundingClientRect(this.cel.typProgressControl)
+    this.player.video.pause()
+    const typProgressControlPoint = DOM.getPointerPosition(this.cel.typProgressControl, event).x
+    this.cel.typPlayProgress.style.width = `${typProgressControlPoint * 100}%`
+    this.cel.typProgressControl.addEventListener('mousemove', this.handleMouseMove, false)
+    this.cel.typProgressControl.addEventListener('mouseup', this.handleMouseUp, false)
+    this.cel.typProgressControl.addEventListener('touchmove', this.handleMouseMove, false)
+    this.cel.typProgressControl.addEventListener('touchend', this.handleMouseUp, false)
   }
 
-  handleMouseMove () {
-
+  handleMouseMove (event) {
+    // event.preventDefault()
+    // event.stopPropagation()
+    // const typProgressControlRect = DOM.getBoundingClientRect(this.cel.typProgressControl)
+    const typProgressControlPoint = DOM.getPointerPosition(this.cel.typProgressControl, event).x
+    this.cel.typPlayProgress.style.width = `${typProgressControlPoint * 100}%`
+    console.log(`${typProgressControlPoint}%`)
   }
 
   handleMouseUp (event) {
+    event.preventDefault()
+    event.stopPropagation()
+    this.player.video.play()
     const duration = this.player.duration()
     // const typProgressControlRect = DOM.getBoundingClientRect(this.cel.typProgressControl)
     const typProgressControlPoint = DOM.getPointerPosition(this.cel.typProgressControl, event).x
     const currentTime = typProgressControlPoint * duration
     // 设置当前时间播放
     this.player.currentTime(currentTime)
+    // this.cel.typProgressControl.removeEventListener('mousedown', this.handleMouseDown, false)
+    this.cel.typProgressControl.removeEventListener('mousemove', this.handleMouseMove, false)
+    this.cel.typProgressControl.removeEventListener('mouseup', this.handleMouseUp, false)
+    this.cel.typProgressControl.removeEventListener('touchmove', this.handleMouseMove, false)
+    this.cel.typProgressControl.removeEventListener('touchend', this.handleMouseUp, false)
 
     // console.log(typProgressControlRect, typProgressControlPoint)
     // typProgressControlRect.width * typProgressControlPoint
@@ -192,6 +276,22 @@ class ControlBar {
     //   if (currtime > video[0].currentTime) return false
     // }
     // this.player.currentTime(currtime)
+  }
+
+  handleFullscreenChange () {
+    if (!this.player.isFullscreen()) {
+      DOM.requestFullscreen(this.fullEl).then(() => {
+        this.player.isFullscreen(true)
+      }).catch(() => {
+        this.player.isFullscreen(false)
+      })
+    } else {
+      DOM.exitFullScreen(this.fullEl).then(() => {
+        this.player.isFullscreen(false)
+      }).catch(() => {
+        this.player.isFullscreen(false)
+      })
+    }
   }
 }
 export default ControlBar

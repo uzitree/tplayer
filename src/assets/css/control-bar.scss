@@ -11,27 +11,22 @@
   display: flex;
   align-items: center;
   color: #fff;
+
   &::before {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
     content: "";
-    height: 4.5em;
-    background-image: -webkit-gradient(
-      linear,
-      left top,
-      left bottom,
-      color-stop(0, rgba(0, 0, 0, 0)),
-      to(rgba(0, 0, 0, 0.5))
-    );
+    height: 3em;
     background-image: linear-gradient(
       to bottom,
       rgba(0, 0, 0, 0) 0,
-      rgba(0, 0, 0, 0.5) 100%
+      rgba(0, 0, 0, 0.7) 100%
     );
     background-repeat: repeat-x;
     z-index: -1;
+
   }
   .typ-control-btn {
     cursor: pointer;
@@ -60,6 +55,7 @@
     
     .typ-progress-slider {
       cursor: pointer;
+      // margin: 0 10px;
       position: relative;
       padding: 0;
       // margin: 0 0.45em 0 0.45em;

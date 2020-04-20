@@ -6,7 +6,7 @@ import { version } from '../package.json'
 import EventMiddleware from '@tulies/event-middleware'
 
 import Player from './components/player'
-import MVFrame from './plugins/mv-frame'
+// import MVFrame from './plugins/mv-frame'
 
 import './assets/css/index.scss'
 
@@ -17,6 +17,7 @@ class MVPlayer {
   constructor (id, options = {}, ready = null) {
     const parentEl = document.getElementById(id)
     this.parentEl = parentEl
+
     this.eventMiddleware = EventMiddleware.instance()
     // 播放器实例化 => player.js
     this.playerObj = new Player(this, parentEl, options, ready)
@@ -29,7 +30,7 @@ class MVPlayer {
 
     // 组装插件
     this.plugin = {}
-    this.usePlugin(new MVFrame())
+    // this.usePlugin(new MVFrame())
     return this
   }
 

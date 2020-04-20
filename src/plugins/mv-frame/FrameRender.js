@@ -32,7 +32,7 @@ class FrameRender {
   }
 
   initRender () {
-    console.log(this.webglFrame.clientWidth)
+    // console.log(this.webglFrame.clientWidth)
     const renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setPixelRatio(window.devicePixelRatio)
     renderer.setSize(this.webglFrame.clientWidth, this.webglFrame.clientHeight)
@@ -63,7 +63,7 @@ class FrameRender {
     const indexX = this.uvs[startIndex][0]
     const indexY = this.uvs[startIndex][1]
     const geometry = new THREE.PlaneGeometry(16, 9)
-    console.log(geometry)
+    // console.log(geometry)
     // geometry.faceVertexUvs[0][0]= [new THREE.Vector2(0,0.5), new THREE.Vector2(0,0.25), new THREE.Vector2(0.25,0.5)]
     // geometry.faceVertexUvs[0][1]= [new THREE.Vector2(0,0.25), new THREE.Vector2(0.25,0.25), new THREE.Vector2(0.25,0.5)]
     geometry.faceVertexUvs[0][0] = [new THREE.Vector2(indexX * stepX, (indexY + 1) * stepY), new THREE.Vector2(indexX * stepX, indexY * stepY), new THREE.Vector2((indexX + 1) * stepX, (indexY + 1) * stepY)]
@@ -119,7 +119,7 @@ class FrameRender {
       startX = 0
     })
     webglFrame.querySelector('canvas').addEventListener('touchmove', function (e) {
-      console.log(e.touches[0].clientX)
+      // console.log(e.touches[0].clientX)
       // var w = distancex<0?distancex*-1:distancex;
       // var h = distancey<0?distancey*-1:distancey;
       // if (w<h) {e.preventDefault(); }

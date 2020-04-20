@@ -3,6 +3,8 @@
  * @Date: 2020-03-29 21:52:10
  */
 import computedStyle from './computed-style'
+import FullscreenApi from '@/utils/fullscreen-api'
+console.log('FullscreenApi', FullscreenApi)
 
 const trim = function (string) {
   return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '')
@@ -223,4 +225,71 @@ export function findPosition (el) {
     left: Math.round(left),
     top: Math.round(top)
   }
+}
+
+export function requestFullscreen (element) {
+  return new Promise((resolve, reject) => {
+    const changeHandler = () => {
+      offHandler()
+      resolve()
+    }
+    const errorHandler = (e, err) => {
+      offHandler()
+      reject(err)
+    }
+    const offHandler = () => {
+      element.removeEventListener(FullscreenApi.fullscreenchange, changeHandler)
+      element.removeEventListener(FullscreenApi.fullscreenerror, errorHandler)
+    }
+    element.addEventListener(FullscreenApi.fullscreenchange, changeHandler, { once: true })
+    element.addEventListener(FullscreenApi.fullscreenerror, errorHandler, { once: true })
+    console.log(FullscreenApi.requestFullscreen)
+    if (element[FullscreenApi.requestFullscreen]) element[FullscreenApi.requestFullscreen]()
+
+    // if (element.requestFullscreen) {
+    //   element.requestFullscreen()
+    // } else if (element.mozRequestFullScreen) {
+    //   element.mozRequestFullScreen()
+    // } else if (element.msRequestFullscreen) {
+    //   element.msRequestFullscreen()
+    // } else if (element.webkitRequestFullscreen) {
+    //   element.webkitRequestFullScreen()
+    // } else {
+    //   console.log('不支持全屏相关事件')
+    // }
+  })
+}
+
+export function exitFullScreen (element) {
+  return new Promise((resolve, reject) => {
+    const changeHandler = () => {
+      offHandler()
+      resolve()
+    }
+    const errorHandler = (e, err) => {
+      offHandler()
+      reject(err)
+    }
+    const offHandler = () => {
+      element.removeEventListener(FullscreenApi.fullscreenchange, changeHandler)
+      element.removeEventListener(FullscreenApi.fullscreenerror, errorHandler)
+    }
+    element.addEventListener(FullscreenApi.fullscreenchange, changeHandler, { once: true })
+    element.addEventListener(FullscreenApi.fullscreenerror, errorHandler, { once: true })
+
+    if (document[FullscreenApi.exitFullscreen]) document[FullscreenApi.exitFullscreen]()
+    // if (document.exitFullscreen) {
+    //   document.exitFullscreen()
+    // } else if (document.mozCancelFullScreen) {
+    //   document.mozCancelFullScreen()
+    // } else if (document.msExitFullscreen) {
+    //   document.msExiFullscreen()
+    // } else if (document.webkitCancelFullScreen) {
+    //   document.webkitCancelFullScreen()
+    // } else if (document.webkitExitFullscreen) {
+    //   document.webkitExitFullscreen()
+    // } else {
+    //   console.log('不支持退出全屏相关事件')
+    // }
+  })
 }

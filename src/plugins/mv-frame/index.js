@@ -25,16 +25,19 @@ class MVFrame {
     })
     // frameRender.render()
 
-    mvp.playerObj.video.addEventListener('playing', () => {
+    const initrender = () => {
+      console.log('frameRender ----- playing')
+      mvp.playerObj.video.removeEventListener('playing', initrender)
       // console.log('canplay')
       setTimeout(() => {
         frameRender.render()
-      }, 100)
-    })
+      }, 50)
+    }
+    mvp.playerObj.video.addEventListener('playing', initrender, { once: true })
 
     // const videoTexture = new THREE.VideoTexture(mvp.playerObj.video)
-    console.log(frameRender)
-    console.log('MVFrame')
+    // console.log(frameRender)
+    // console.log('MVFrame')
   }
 }
 
