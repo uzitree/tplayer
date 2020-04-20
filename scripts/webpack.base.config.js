@@ -84,7 +84,7 @@ const config = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'MVPlayer.css'
+      filename: 'tplayer.css'
     })
     // new webpack.HotModuleReplacementPlugin(),
   ]

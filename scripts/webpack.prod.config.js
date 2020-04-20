@@ -5,8 +5,8 @@ module.exports = {
   output: {
     libraryTarget: 'umd',
     libraryExport: 'default',
-    library: 'MVPlayer',
-    filename: 'MVPlayer.js',
+    library: 'TPlayer',
+    filename: 'tplayer.js',
     path: path.join(__dirname, '../dist')
     // publicPath: 'http://127.0.0.1:8000/public/'
   },

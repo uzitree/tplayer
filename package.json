@@ -1,7 +1,7 @@
 {
-  "name": "multi-view-player",
+  "name": "tplayer",
   "version": "0.0.1",
-  "description": "多视角播放器",
+  "description": "This is a h5-video player",
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode=development --watch --progress --config scripts/webpack.config.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tulies/multi-view-player.git"
+    "url": "git+https://github.com/tulies/tplayer.git"
   },
   "author": "王嘉炀",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/tulies/multi-view-player/issues"
+    "url": "https://github.com/tulies/tplayer/issues"
   },
-  "homepage": "https://github.com/tulies/multi-view-player#readme",
+  "homepage": "https://github.com/tulies/tplayer#readme",
   "devDependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",

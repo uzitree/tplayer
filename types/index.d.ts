@@ -1,4 +1,4 @@
-declare class MVPlayer {
+declare class TPlayer {
   /**
    * 版本号
    */
@@ -31,4 +31,4 @@ declare class MVPlayer {
 //  export =UUU
 // }
 
-export default MVPlayer
+export default TPlayer
