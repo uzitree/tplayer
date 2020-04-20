@@ -1,8 +1,8 @@
 {
   "id": "1735140",
-  "name": "typlayer",
-  "font_family": "typfont",
-  "css_prefix_text": "typicon-",
+  "name": "tplayer",
+  "font_family": "tpfont",
+  "css_prefix_text": "tpicon-",
   "description": "",
   "glyphs": [
     {

@@ -15,10 +15,10 @@ class MVFrame {
     // 首先我们需要把webgl容器占位好。
     mvp.plugin.mvf = this
     const videoHtml = `
-      <div class="typ-free-frame"></div>
+      <div class="tp-free-frame"></div>
     `
     Dom.append(mvp.el, videoHtml)
-    this.el = mvp.el.querySelector('.typ-free-frame')
+    this.el = mvp.el.querySelector('.tp-free-frame')
     // 我需要先拿到播放器的流
     const frameRender = new FrameRender(this.el, {
       video: mvp.playerObj.video

@@ -124,7 +124,7 @@ export function getBoundingClientRect (el) {
 /**
  * Represents x and y coordinates for a DOM element or mouse pointer.
  *
- * @typedef  {Object} module:dom~Coordinates
+ * @tpedef  {Object} module:dom~Coordinates
  *
  * @property {number} x
  *           x coordinate in pixels
@@ -173,7 +173,7 @@ export function getPointerPosition (el, event) {
 /**
  * Represents the position of a DOM element on the page.
  *
- * @typedef  {Object} module:dom~Position
+ * @tpedef  {Object} module:dom~Position
  *
  * @property {number} left
  *           Pixels to the left.

@@ -1,4 +1,4 @@
-.typ-control-bar {
+.tp-control-bar {
   position: absolute;
   z-index: 10;
   width: 100%;
@@ -28,7 +28,7 @@
     z-index: -1;
 
   }
-  .typ-control-btn {
+  .tp-control-btn {
     cursor: pointer;
     color: #fff;
     height: 100%;
@@ -36,16 +36,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    .typfont {
+    .tpfont {
       font-size: 1.6em;
     }
   }
 
-  .typ-control-txt {
+  .tp-control-txt {
     font-size: 0.66em;
   }
 
-  .typ-progress-control {
+  .tp-progress-control {
     cursor: pointer;
     flex: auto;
     display: flex;
@@ -53,7 +53,7 @@
     height: 100%;
     margin: 0 0.45em 0 0.45em;
     
-    .typ-progress-slider {
+    .tp-progress-slider {
       cursor: pointer;
       // margin: 0 10px;
       position: relative;
@@ -66,7 +66,7 @@
       height: 2px;
       flex: auto;
     }
-    .typ-load-progress{
+    .tp-load-progress{
       position: absolute;
       display: block;
       height: 100%;
@@ -80,7 +80,7 @@
       width: 0;
     }
 
-    .typ-play-progress{
+    .tp-play-progress{
       position: absolute;
       display: block;
       height: 100%;
@@ -92,7 +92,7 @@
       background-color: #fff;
       width: 0;
 
-      .typ-play-current{
+      .tp-play-current{
         display: block;
         width: 13px;
         height: 13px;
@@ -122,6 +122,6 @@
   }
 }
 
-.typ-playing .typicon-bofangqi-bofang:before {
+.tp-playing .tpicon-bofangqi-bofang:before {
   content: "\e6a5";
 }

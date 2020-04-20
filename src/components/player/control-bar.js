@@ -27,34 +27,34 @@ class ControlBar {
 
   createDomHtml () {
     const html = `
-      <div class="typ-control-bar">
-        <div class="typ-control-btn typ-play-control"><span class="icon typfont typicon-bofangqi-bofang"></span></div>
-        <div class="typ-control-txt typ-remaining-time-display">0:00</div>
-        <div class="typ-progress-control">
-          <div class="typ-progress-slider">
-            <div class="typ-load-progress"></div>
-            <div class="typ-mouse-display"></div>
-            <div class="typ-play-progress">
-              <i class="typ-play-current"></i>
+      <div class="tp-control-bar">
+        <div class="tp-control-btn tp-play-control"><span class="icon tpfont tpicon-bofangqi-bofang"></span></div>
+        <div class="tp-control-txt tp-remaining-time-display">0:00</div>
+        <div class="tp-progress-control">
+          <div class="tp-progress-slider">
+            <div class="tp-load-progress"></div>
+            <div class="tp-mouse-display"></div>
+            <div class="tp-play-progress">
+              <i class="tp-play-current"></i>
             </div>
           </div>
         </div>
-        <div class="typ-control-txt typ-duration-display">--:--</div>
-        <div class="typ-control-btn typ-fullscreen-control"><span class="icon typfont typicon-fullscreen"></span></div>
+        <div class="tp-control-txt tp-duration-display">--:--</div>
+        <div class="tp-control-btn tp-fullscreen-control"><span class="icon tpfont tpicon-fullscreen"></span></div>
       </div>
     `
     DOM.append(this.player.el, html)
-    this.el = this.player.el.querySelector('.typ-control-bar')
+    this.el = this.player.el.querySelector('.tp-control-bar')
     this.cel = {
-      typPlayControl: this.el.querySelector('.typ-play-control'),
-      typRemainingTimeDisplay: this.el.querySelector('.typ-remaining-time-display'),
-      typDurationDisplay: this.el.querySelector('.typ-duration-display'),
-      typProgressSlider: this.el.querySelector('.typ-progress-slider'),
-      typLoadProgress: this.el.querySelector('.typ-load-progress'),
-      typPlayProgress: this.el.querySelector('.typ-play-progress'),
-      typPlayCurrent: this.el.querySelector('.typ-play-current'),
-      typProgressControl: this.el.querySelector('.typ-progress-control'),
-      typFullscreenControl: this.el.querySelector('.typ-fullscreen-control')
+      tpPlayControl: this.el.querySelector('.tp-play-control'),
+      tpRemainingTimeDisplay: this.el.querySelector('.tp-remaining-time-display'),
+      tpDurationDisplay: this.el.querySelector('.tp-duration-display'),
+      tpProgressSlider: this.el.querySelector('.tp-progress-slider'),
+      tpLoadProgress: this.el.querySelector('.tp-load-progress'),
+      tpPlayProgress: this.el.querySelector('.tp-play-progress'),
+      tpPlayCurrent: this.el.querySelector('.tp-play-current'),
+      tpProgressControl: this.el.querySelector('.tp-progress-control'),
+      tpFullscreenControl: this.el.querySelector('.tp-fullscreen-control')
     }
   }
 
@@ -74,7 +74,7 @@ class ControlBar {
       event.stopPropagation()
       this.player.reportUserActivity()
     }, false)
-    this.cel.typPlayControl.addEventListener('click', () => {
+    this.cel.tpPlayControl.addEventListener('click', () => {
       if (this.player.video.paused) {
         this.player.video.play()
       } else {
@@ -100,7 +100,7 @@ class ControlBar {
       })
     }
 
-    this.cel.typFullscreenControl.addEventListener('click', () => {
+    this.cel.tpFullscreenControl.addEventListener('click', () => {
       if (FullscreenApi.requestFullscreen) {
         this.handleFullscreenChange()
       } else {
@@ -130,7 +130,7 @@ class ControlBar {
   }
 
   onEventListener () {
-    // const { typPlayControlEL } = this.cel
+    // const { tpPlayControlEL } = this.cel
     // 更新当前时间
     this.player.video.addEventListener('ended', () => {
       this.updateCurrentTimeContent()
@@ -157,8 +157,8 @@ class ControlBar {
       this.updateLoadProgress()
     })
 
-    this.cel.typProgressControl.addEventListener('mousedown', this.handleMouseDown, false)
-    this.cel.typProgressControl.addEventListener('touchstart', this.handleMouseDown, false)
+    this.cel.tpProgressControl.addEventListener('mousedown', this.handleMouseDown, false)
+    this.cel.tpProgressControl.addEventListener('touchstart', this.handleMouseDown, false)
   }
 
   // 更新当前时间
@@ -172,7 +172,7 @@ class ControlBar {
     }
 
     time = timeFormat(time)
-    this.cel.typRemainingTimeDisplay.innerHTML = time
+    this.cel.tpRemainingTimeDisplay.innerHTML = time
 
     // this.updateTextNode_(time)
   }
@@ -181,7 +181,7 @@ class ControlBar {
   updateDurationTimeContent () {
     let time = this.player.duration()
     time = timeFormat(time)
-    this.cel.typDurationDisplay.innerHTML = time
+    this.cel.tpDurationDisplay.innerHTML = time
 
     // this.updateTextNode_(time)
   }
@@ -196,7 +196,7 @@ class ControlBar {
     // console.log(buffered)
     // 这个是加载进度
     const percent = percentify(bufferedEnd, duration)
-    this.cel.typLoadProgress.style.width = percent
+    this.cel.tpLoadProgress.style.width = percent
     // console.log(percent)
   }
 
@@ -210,7 +210,7 @@ class ControlBar {
     var persent = currentTime / duration
 
     // console.log('updatePlayProgress', currentTime, persent)
-    this.cel.typPlayProgress.style.width = persent * 100 + '%'
+    this.cel.tpPlayProgress.style.width = persent * 100 + '%'
     // })
     // timeTooltip.updateTime(seekBarRect, seekBarPoint, time)
   }
@@ -227,23 +227,23 @@ class ControlBar {
   handleMouseDown (event) {
     event.preventDefault()
     event.stopPropagation()
-    // const typProgressControlRect = DOM.getBoundingClientRect(this.cel.typProgressControl)
+    // const tpProgressControlRect = DOM.getBoundingClientRect(this.cel.tpProgressControl)
     this.player.video.pause()
-    const typProgressControlPoint = DOM.getPointerPosition(this.cel.typProgressControl, event).x
-    this.cel.typPlayProgress.style.width = `${typProgressControlPoint * 100}%`
-    this.cel.typProgressControl.addEventListener('mousemove', this.handleMouseMove, false)
-    this.cel.typProgressControl.addEventListener('mouseup', this.handleMouseUp, false)
-    this.cel.typProgressControl.addEventListener('touchmove', this.handleMouseMove, false)
-    this.cel.typProgressControl.addEventListener('touchend', this.handleMouseUp, false)
+    const tpProgressControlPoint = DOM.getPointerPosition(this.cel.tpProgressControl, event).x
+    this.cel.tpPlayProgress.style.width = `${tpProgressControlPoint * 100}%`
+    this.cel.tpProgressControl.addEventListener('mousemove', this.handleMouseMove, false)
+    this.cel.tpProgressControl.addEventListener('mouseup', this.handleMouseUp, false)
+    this.cel.tpProgressControl.addEventListener('touchmove', this.handleMouseMove, false)
+    this.cel.tpProgressControl.addEventListener('touchend', this.handleMouseUp, false)
   }
 
   handleMouseMove (event) {
     // event.preventDefault()
     // event.stopPropagation()
-    // const typProgressControlRect = DOM.getBoundingClientRect(this.cel.typProgressControl)
-    const typProgressControlPoint = DOM.getPointerPosition(this.cel.typProgressControl, event).x
-    this.cel.typPlayProgress.style.width = `${typProgressControlPoint * 100}%`
-    console.log(`${typProgressControlPoint}%`)
+    // const tpProgressControlRect = DOM.getBoundingClientRect(this.cel.tpProgressControl)
+    const tpProgressControlPoint = DOM.getPointerPosition(this.cel.tpProgressControl, event).x
+    this.cel.tpPlayProgress.style.width = `${tpProgressControlPoint * 100}%`
+    console.log(`${tpProgressControlPoint}%`)
   }
 
   handleMouseUp (event) {
@@ -251,21 +251,21 @@ class ControlBar {
     event.stopPropagation()
     this.player.video.play()
     const duration = this.player.duration()
-    // const typProgressControlRect = DOM.getBoundingClientRect(this.cel.typProgressControl)
-    const typProgressControlPoint = DOM.getPointerPosition(this.cel.typProgressControl, event).x
-    const currentTime = typProgressControlPoint * duration
+    // const tpProgressControlRect = DOM.getBoundingClientRect(this.cel.tpProgressControl)
+    const tpProgressControlPoint = DOM.getPointerPosition(this.cel.tpProgressControl, event).x
+    const currentTime = tpProgressControlPoint * duration
     // 设置当前时间播放
     this.player.currentTime(currentTime)
-    // this.cel.typProgressControl.removeEventListener('mousedown', this.handleMouseDown, false)
-    this.cel.typProgressControl.removeEventListener('mousemove', this.handleMouseMove, false)
-    this.cel.typProgressControl.removeEventListener('mouseup', this.handleMouseUp, false)
-    this.cel.typProgressControl.removeEventListener('touchmove', this.handleMouseMove, false)
-    this.cel.typProgressControl.removeEventListener('touchend', this.handleMouseUp, false)
+    // this.cel.tpProgressControl.removeEventListener('mousedown', this.handleMouseDown, false)
+    this.cel.tpProgressControl.removeEventListener('mousemove', this.handleMouseMove, false)
+    this.cel.tpProgressControl.removeEventListener('mouseup', this.handleMouseUp, false)
+    this.cel.tpProgressControl.removeEventListener('touchmove', this.handleMouseMove, false)
+    this.cel.tpProgressControl.removeEventListener('touchend', this.handleMouseUp, false)
 
-    // console.log(typProgressControlRect, typProgressControlPoint)
-    // typProgressControlRect.width * typProgressControlPoint
+    // console.log(tpProgressControlRect, tpProgressControlPoint)
+    // tpProgressControlRect.width * tpProgressControlPoint
 
-    // const totalWidth = this.cel.typProgressControl.clientWidth
+    // const totalWidth = this.cel.tpProgressControl.clientWidth
     // let moveWidth = event.offsetX
     // if (moveWidth < 0) moveWidth = 0
     // if (moveWidth > totalWidth) moveWidth = totalWidth

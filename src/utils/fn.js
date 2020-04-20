@@ -37,7 +37,7 @@ export const bind = function (context, fn, uid) {
   const bound = fn.bind(context)
 
   // Allow for the ability to individualize this function
-  // Needed in the case where multiple objects might share the same prototype
+  // Needed in the case where multiple objects might share the same prototpe
   // IF both items add an event listener with the same function, then you try to remove just one
   // it will remove both because they both have the same guid.
   // when using this, you need to use the bind method when you remove the listener as well.

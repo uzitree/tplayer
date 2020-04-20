@@ -33,9 +33,9 @@ class Player {
     // Update controls className. Can't do this when the controls are initially
     // set because the element doesn't exist yet.
     if (this.controls()) {
-      DOM.addClass(this.el, 'typ-controls-enabled')
+      DOM.addClass(this.el, 'tp-controls-enabled')
     } else {
-      DOM.addClass(this.el, 'typ-controls-disabled')
+      DOM.addClass(this.el, 'tp-controls-disabled')
     }
 
     this.userActive(true)
@@ -123,20 +123,21 @@ class Player {
 
   createVideoDom () {
     const videoHtml = `
-      <div class="typ-constainer">
-        <div class="typ-video"><video webkit-playsinline="true" playsinline="true" ></video></div>
-        <div class="typ-loading-spinner"></div>
-        <div class="typ-poster"></div>
-        <div class="typ-platbtn"></div>
+      <div class="tp-constainer">
+        <div class="tp-video"><video webkit-playsinline="true" playsinline="true" ></video></div>
+        <div class="tp-loading-spinner"></div>
+        <div class="tp-poster"></div>
+        <div class="tp-playbtn"></div>
       </div>
     `
+    console.log(this.parentEl)
     DOM.append(this.parentEl, videoHtml)
-    this.el = this.parentEl.querySelector('.typ-constainer')
+    this.el = this.parentEl.querySelector('.tp-constainer')
     this.video = this.el.querySelector('video')
     if (this.options.src) {
       this.video.src = this.options.src
     }
-    this.el.querySelector('.typ-platbtn').addEventListener('click', () => {
+    this.el.querySelector('.tp-playbtn').addEventListener('click', () => {
       console.log('开始播放')
       this.video.play()
     })
@@ -145,7 +146,7 @@ class Player {
 
   // 触发了开始
   // handleStarted () {
-  //   DOM.addClass(this.el, 'typ-has-started')
+  //   DOM.addClass(this.el, 'tp-has-started')
   // }
 
   onVideoEvent () {
@@ -171,8 +172,8 @@ class Player {
       // 触发第一次
       this.hasStarted(true)
 
-      DOM.removeClass(this.el, 'typ-pause')
-      DOM.addClass(this.el, 'typ-playing')
+      DOM.removeClass(this.el, 'tp-pause')
+      DOM.addClass(this.el, 'tp-playing')
     })
     this.video.addEventListener('playing', () => {
       console.log('playing')
@@ -182,8 +183,8 @@ class Player {
     })
     this.video.addEventListener('pause', () => {
       console.log('pause')
-      DOM.removeClass(this.el, 'typ-playing')
-      DOM.addClass(this.el, 'typ-pause')
+      DOM.removeClass(this.el, 'tp-playing')
+      DOM.addClass(this.el, 'tp-pause')
     })
     this.video.addEventListener('ended', () => {
       console.log('ended')
@@ -277,13 +278,14 @@ class Player {
 
   // 点击播放器
   handlePlayerClick_ () {
-    console.log('handlePlayerClick_', this.controls_)
     if (!this.hasStarted_) {
       return
     }
     if (!this.controls_) {
       return
     }
+    console.log('handlePlayerClick_', this.controls_)
+
     if (this.video.paused) {
       this.video.play()
     } else {
@@ -433,8 +435,8 @@ class Player {
 
     if (this.userActive_) {
       this.userActivity_ = true
-      DOM.removeClass(this.el, 'typ-user-inactive')
-      DOM.addClass(this.el, 'typ-user-active')
+      DOM.removeClass(this.el, 'tp-user-inactive')
+      DOM.addClass(this.el, 'tp-user-active')
       return
     }
 
@@ -454,8 +456,8 @@ class Player {
     // }
 
     this.userActivity_ = false
-    DOM.removeClass(this.el, 'typ-user-active')
-    DOM.addClass(this.el, 'typ-user-inactive')
+    DOM.removeClass(this.el, 'tp-user-active')
+    DOM.addClass(this.el, 'tp-user-inactive')
   }
 
   /**
@@ -482,11 +484,11 @@ class Player {
     this.controls_ = bool
 
     if (this.controls_) {
-      DOM.removeClass(this.el, 'typ-controls-disabled')
-      DOM.addClass(this.el, 'typ-controls-enabled')
+      DOM.removeClass(this.el, 'tp-controls-disabled')
+      DOM.addClass(this.el, 'tp-controls-enabled')
     } else {
-      DOM.removeClass(this.el, 'typ-controls-enabled')
-      DOM.addClass(this.el, 'typ-controls-disabled')
+      DOM.removeClass(this.el, 'tp-controls-enabled')
+      DOM.addClass(this.el, 'tp-controls-disabled')
     }
   }
 
@@ -498,9 +500,9 @@ class Player {
     this.scrubbing_ = !!isScrubbing
 
     if (isScrubbing) {
-      DOM.addClass(this.el, 'typ-scrubbing')
+      DOM.addClass(this.el, 'tp-scrubbing')
     } else {
-      DOM.addClass(this.el, 'typ-scrubbing')
+      DOM.addClass(this.el, 'tp-scrubbing')
     }
   }
 
@@ -557,9 +559,9 @@ class Player {
       this.cache_.duration = seconds
 
       if (seconds === Infinity) {
-        DOM.addClass(this.el, 'typ-live')
+        DOM.addClass(this.el, 'tp-live')
       } else {
-        DOM.addClass(this.el, 'typ-live')
+        DOM.addClass(this.el, 'tp-live')
       }
       if (!isNaN(seconds)) {
         // Do not fire durationchange unless the duration value is known.
@@ -567,7 +569,7 @@ class Player {
         // @see [Spec]{@link https://www.w3.org/TR/2011/WD-html5-20110113/video.html#media-element-load-algorithm}
         /**
          * @event Player#durationchange
-         * @type {EventTarget~Event}
+         * @tpe {EventTarget~Event}
          */
         // this.trigger('durationchange')
       }
@@ -630,11 +632,11 @@ class Player {
     }
     this.hasStarted_ = request
     if (this.hasStarted_) {
-      DOM.addClass(this.el, 'typ-has-started')
+      DOM.addClass(this.el, 'tp-has-started')
       // 触发第一次play
       // this.trigger('firstplay')
     } else {
-      DOM.removeClass(this.el, 'typ-has-started')
+      DOM.removeClass(this.el, 'tp-has-started')
     }
   }
 
@@ -665,7 +667,7 @@ class Player {
       // if (this.cache_.isFullscreen_ !== oldValue && this.fsApi_.prefixed) {
       /**
            * @event Player#fullscreenchange
-           * @type {EventTarget~Event}
+           * @tpe {EventTarget~Event}
            */
       // 回调 全屏change事件
       // this.trigger('fullscreenchange')
@@ -681,9 +683,9 @@ class Player {
    */
   toggleFullscreenClass_ () {
     if (this.isFullscreen()) {
-      DOM.addClass(this.el, 'typ-fullscreen')
+      DOM.addClass(this.el, 'tp-fullscreen')
     } else {
-      DOM.removeClass(this.el, 'typ-fullscreen')
+      DOM.removeClass(this.el, 'tp-fullscreen')
     }
   }
 

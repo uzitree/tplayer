@@ -14,7 +14,7 @@ const _initialGuid = 3
 /**
  * Unique ID for an element or function
  *
- * @type {Number}
+ * @tpe {Number}
  */
 let _guid = _initialGuid
 

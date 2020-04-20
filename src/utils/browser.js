@@ -14,7 +14,7 @@ const appleWebkitVersion = webkitVersionMap ? parseFloat(webkitVersionMap.pop())
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_IPOD = (/iPod/i).test(USER_AGENT)
 
@@ -23,7 +23,7 @@ export const IS_IPOD = (/iPod/i).test(USER_AGENT)
  *
  * @static
  * @const
- * @type {string|null}
+ * @tpe {string|null}
  */
 export const IOS_VERSION = (function () {
   const match = USER_AGENT.match(/OS (\d+)_/i)
@@ -39,7 +39,7 @@ export const IOS_VERSION = (function () {
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_ANDROID = (/Android/i).test(USER_AGENT)
 
@@ -48,7 +48,7 @@ export const IS_ANDROID = (/Android/i).test(USER_AGENT)
  *
  * @static
  * @const
- * @type {number|string|null}
+ * @tpe {number|string|null}
  */
 export const ANDROID_VERSION = (function () {
   // This matches Android Major.Minor.Patch versions
@@ -75,7 +75,7 @@ export const ANDROID_VERSION = (function () {
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_NATIVE_ANDROID = IS_ANDROID && ANDROID_VERSION < 5 && appleWebkitVersion < 537
 
@@ -84,7 +84,7 @@ export const IS_NATIVE_ANDROID = IS_ANDROID && ANDROID_VERSION < 5 && appleWebki
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_FIREFOX = (/Firefox/i).test(USER_AGENT)
 
@@ -93,7 +93,7 @@ export const IS_FIREFOX = (/Firefox/i).test(USER_AGENT)
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_EDGE = (/Edg/i).test(USER_AGENT)
 
@@ -105,7 +105,7 @@ export const IS_EDGE = (/Edg/i).test(USER_AGENT)
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_CHROME = !IS_EDGE && ((/Chrome/i).test(USER_AGENT) || (/CriOS/i).test(USER_AGENT))
 
@@ -114,7 +114,7 @@ export const IS_CHROME = !IS_EDGE && ((/Chrome/i).test(USER_AGENT) || (/CriOS/i)
  *
  * @static
  * @const
- * @type {number|null}
+ * @tpe {number|null}
  */
 export const CHROME_VERSION = (function () {
   const match = USER_AGENT.match(/(Chrome|CriOS)\/(\d+)/)
@@ -130,7 +130,7 @@ export const CHROME_VERSION = (function () {
  *
  * @static
  * @const
- * @type {number|null}
+ * @tpe {number|null}
  */
 export const IE_VERSION = (function () {
   const result = (/MSIE\s(\d+)\.\d/).exec(USER_AGENT)
@@ -149,7 +149,7 @@ export const IE_VERSION = (function () {
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_SAFARI = (/Safari/i).test(USER_AGENT) && !IS_CHROME && !IS_ANDROID && !IS_EDGE
 
@@ -158,7 +158,7 @@ export const IS_SAFARI = (/Safari/i).test(USER_AGENT) && !IS_CHROME && !IS_ANDRO
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_WINDOWS = (/Windows/i).test(USER_AGENT)
 
@@ -167,7 +167,7 @@ export const IS_WINDOWS = (/Windows/i).test(USER_AGENT)
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const TOUCH_ENABLED = Dom.isReal() && (
   'ontouchstart' in window ||
@@ -179,7 +179,7 @@ export const TOUCH_ENABLED = Dom.isReal() && (
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_IPAD = (/iPad/i).test(USER_AGENT) ||
   (IS_SAFARI && TOUCH_ENABLED && !(/iPhone/i).test(USER_AGENT))
@@ -189,7 +189,7 @@ export const IS_IPAD = (/iPad/i).test(USER_AGENT) ||
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 // The Facebook app's UIWebView identifies as both an iPhone and iPad, so
 // to identify iPhones, we need to exclude iPads.
@@ -201,7 +201,7 @@ export const IS_IPHONE = (/iPhone/i).test(USER_AGENT) && !IS_IPAD
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_IOS = IS_IPHONE || IS_IPAD || IS_IPOD
 
@@ -210,6 +210,6 @@ export const IS_IOS = IS_IPHONE || IS_IPAD || IS_IPOD
  *
  * @static
  * @const
- * @type {Boolean}
+ * @tpe {Boolean}
  */
 export const IS_ANY_SAFARI = (IS_SAFARI || IS_IOS) && !IS_CHROME

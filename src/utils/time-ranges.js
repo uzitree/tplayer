@@ -7,7 +7,7 @@
  * Returns the time for the specified index at the start or end
  * of a TimeRange object.
  *
- * @typedef    {Function} TimeRangeIndex
+ * @tpedef    {Function} TimeRangeIndex
  *
  * @param      {number} [index=0]
  *             The range number to return the time for.
@@ -22,7 +22,7 @@
 /**
  * An object that contains ranges of time.
  *
- * @typedef  {Object} TimeRange
+ * @tpedef  {Object} TimeRange
  *
  * @property {number} length
  *           The number of time ranges represented by this object.
