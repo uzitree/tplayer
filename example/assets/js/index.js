@@ -2,7 +2,9 @@
 // 2） 上海电信自由视角：  C42645169
 // 3)   武术自由视角：  http://liveplay.ctx.tv189.com/live/kungfu.m3u8"
 
+// http://public.vod5g.nty.tv189.com/vod/demo/free/kungfu-free-1800s.mp4.m3u8
+// http://public.vod5g.nty.tv189.com/vod/demo/free/kungfu-free-30s-m42.mp4.m3u8
 var tplayer = new TPlayer('tplayer',{
-  src:'assets/video/kungfu-free-30s-l42.mp4'
+  src:'http://public.vod5g.nty.tv189.com/vod/demo/free/kungfu-free-30s-m42.mp4'
 })
 console.log(tplayer)
