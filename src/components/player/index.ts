@@ -18,28 +18,72 @@ class Player {
 =======
 import * as DOM from '@/utils/dom'
 import ControlBar from './control-bar'
+import { createTimeRange } from '@/utils/time-ranges.js'
+import * as Fn from '@/utils/fn.js'
+// import * as browser from '@/utils/browser.js'
+
 class Player {
-  constructor (mvp, el, options = {}, ready) {
-    this.mvp = mvp
+  constructor ($root, el, options = {}, ready) {
+    this.$root = $root
     this.parentEl = el
 
+<<<<<<< HEAD:src/components/player/index.ts
     // 初始化以下属性
     this.initProp()
 >>>>>>> dev:src/components/player/index.js
+=======
+>>>>>>> dev:src/components/player/index.js
     this.options = this.initOptions(options)
+    // 初始化属性
+    this.initProp(this.options)
+
     this.resetCache_()
     console.log(this.options)
+
     // 创建完就会得到video对象
     this.createVideoDom()
+
     // 绑定监听事件
     this.onVideoEvent()
     this.useConponent(new ControlBar())
+
+    /** init */
+
+    // Update controls className. Can't do this when the controls are initially
+    // set because the element doesn't exist yet.
+    if (this.controls()) {
+      DOM.addClass(this.el, 'typ-controls-enabled')
+    } else {
+      DOM.addClass(this.el, 'typ-controls-disabled')
+    }
+
+    this.userActive(true)
+
+    if (this.controls()) {
+      this.addControlsListeners_()
+    }
+
+    this.listenForUserActivity_ = Fn.bind(this, this.listenForUserActivity_)
+    this.video.addEventListener('play', this.listenForUserActivity_, { once: true })
+
+    console.log(111111111)
+    // this.addControlsListeners_()
   }
 
-  initProp () {
+  initProp (options) {
     this.video = null
     this.isReady_ = false
     this.changingSrc_ = false
+
+    // Init state hasStarted_
+    this.hasStarted_ = false
+
+    // Init state userActive_
+    this.userActive_ = false
+
+    // 控制条是否使用
+    this.controls_ = !!options.controls
+    console.log('this.controls_', this.controls_)
   }
 
   initOptions (options: Options): Options {
@@ -47,7 +91,7 @@ class Player {
       // 是否静音
       muted: false,
       // 是否使用原生控制条
-      controls: false,
+      controls: true,
       // 是否自动播放
       autoplay: false,
       // 预加载
@@ -82,6 +126,7 @@ class Player {
       // it, we reset it along with everything else.
       currentTime: 0,
       initTime: 0,
+      inactivityTimeout: 2000,
       // inactivityTimeout: this.options_.inactivityTimeout,
       duration: NaN,
       lastVolume: 1,
@@ -90,7 +135,8 @@ class Player {
       src: '',
       source: {},
       sources: [],
-      volume: 1
+      volume: 1,
+      isFullscreen: false
     }
 <<<<<<< HEAD:src/components/player/index.ts
     console.log(options)
@@ -103,7 +149,7 @@ class Player {
   createVideoDom (): void {
     const videoHtml = `
       <div class="typ-constainer">
-        <div class="typ-video"><video webkit-playsinline="true" playsinline="true" controls="controls" ></video></div>
+        <div class="typ-video"><video webkit-playsinline="true" playsinline="true" ></video></div>
         <div class="typ-loading-spinner"></div>
         <div class="typ-poster"></div>
         <div class="typ-platbtn"></div>
@@ -188,7 +234,7 @@ class Player {
       console.log('waiting')
     })
     this.video.addEventListener('timeupdate', () => {
-      console.log('timeupdate')
+      // console.log('timeupdate')
     })
 
     this.video.addEventListener('abort', () => {
@@ -197,6 +243,286 @@ class Player {
     this.video.addEventListener('error', () => {
       console.log('error')
     })
+  }
+
+  /**
+   * Set up click and touch listeners for the playback element
+   *
+   * - On desktops: a click on the video itself will toggle playback
+   * - On mobile devices: a click on the video toggles controls
+   *   which is done by toggling the user state between active and
+   *   inactive
+   * - A tap can signal that a user has become active or has become inactive
+   *   e.g. a quick tap on an iPhone movie should reveal the controls. Another
+   *   quick tap should hide them again (signaling the user is in an inactive
+   *   viewing state)
+   * - In addition to this, we still want the user to be considered inactive after
+   *   a few seconds of inactivity.
+   *
+   * > Note: the only part of iOS interaction we can't mimic with this setup
+   * is a touch and hold on the video element counting as activity in order to
+   * keep the controls showing, but that shouldn't be an issue. A touch and hold
+   * on any controls will still keep the user active
+   *
+   * @private
+   */
+  addControlsListeners_ () {
+    // Make sure to remove all the previous listeners in case we are called multiple times.
+    // this.removeTechControlsListeners_()
+
+    // Some browsers (Chrome & IE) don't trigger a click on a flash swf, but do
+    // trigger mousedown/up.
+    // http://stackoverflow.com/questions/1444562/javascript-onclick-event-over-flash-object
+    // Any touch events are set to block the mousedown event from happening
+    // this.on(this.tech_, 'mouseup', this.handleTechClick_)
+    // this.on(this.tech_, 'dblclick', this.handleTechDoubleClick_)
+
+    // If the controls were hidden we don't want that to change without a tap event
+    // so we'll check if the controls were already showing before reporting user
+    // activity
+    // this.on(this.tech_, 'touchstart', this.handleTechTouchStart_)
+    // this.on(this.tech_, 'touchmove', this.handleTechTouchMove_)
+    // this.on(this.tech_, 'touchend', this.handleTechTouchEnd_)
+
+    // The tap listener needs to come after the touchend listener because the tap
+    // listener cancels out any reportedUserActivity when setting userActive(false)
+    // this.on(this.tech_, 'tap', this.handleTechTap_)
+
+    console.log(this.el)
+    this.el.addEventListener('click', this.handlePlayerClick_.bind(this), false)
+    // this.el.addEventListener('touchmove', this.handlePlayerTouchMove_, false)
+  }
+
+  /**
+   * Remove the listeners used for click and tap controls. This is needed for
+   * toggling to controls disabled, where a tap/touch should do nothing.
+   *
+   * @private
+   */
+  removeControlsListeners_ () {
+    // We don't want to just use `this.off()` because there might be other needed
+    // listeners added by techs that extend this.
+    // this.off(this.tech_, 'tap', this.handleTechTap_)
+    // this.off(this.tech_, 'touchstart', this.handleTechTouchStart_)
+    // this.off(this.tech_, 'touchmove', this.handleTechTouchMove_)
+    // this.off(this.tech_, 'touchend', this.handleTechTouchEnd_)
+    // this.off(this.tech_, 'mouseup', this.handleTechClick_)
+    // this.off(this.tech_, 'dblclick', this.handleTechDoubleClick_)
+  }
+
+  // 点击播放器
+  handlePlayerClick_ () {
+    console.log('handlePlayerClick_', this.controls_)
+    if (!this.hasStarted_) {
+      return
+    }
+    if (!this.controls_) {
+      return
+    }
+    if (this.video.paused) {
+      this.video.play()
+    } else {
+      this.video.pause()
+    }
+  }
+
+  /**
+   * Report user activity
+   *
+   * @param {Object} event
+   *        Event object
+   */
+  reportUserActivity (event) {
+    this.userActivity_ = true
+  }
+
+  /**
+   * Listen for user activity based on timeout value
+   *
+   * @private
+   */
+  listenForUserActivity_ () {
+    console.log('listenForUserActivity_')
+
+    let mouseInProgress = null
+    let lastMoveX
+    let lastMoveY
+    const handleActivity = Fn.bind(this, this.reportUserActivity)
+
+    const handleMouseMove = function (e) {
+      // #1068 - Prevent mousemove spamming
+      // Chrome Bug: https://code.google.com/p/chromium/issues/detail?id=366970
+      if (e.screenX !== lastMoveX || e.screenY !== lastMoveY) {
+        lastMoveX = e.screenX
+        lastMoveY = e.screenY
+        handleActivity()
+      }
+    }
+
+    const handleMouseDown = function () {
+      handleActivity()
+      // For as long as the they are touching the device or have their mouse down,
+      // we consider them active even if they're not moving their finger or mouse.
+      // So we want to continue to update that they are active
+      if (mouseInProgress) {
+        window.clearInterval(mouseInProgress)
+        mouseInProgress = null
+      }
+      // Setting userActivity=true now and setting the interval to the same time
+      // as the activityCheck interval (250) should ensure we never miss the
+      // next activityCheck
+      mouseInProgress = window.setInterval(handleActivity, 250)
+    }
+
+    const handleMouseUpAndMouseLeave = function (event) {
+      handleActivity()
+      // Stop the interval that maintains activity if the mouse/touch is down
+      if (mouseInProgress) {
+        window.clearInterval(mouseInProgress)
+        mouseInProgress = null
+      }
+    }
+
+    // Any mouse movement will be considered user activity
+
+    this.el.addEventListener('mousedown', handleMouseDown, false)
+    this.el.addEventListener('mousemove', handleMouseMove, false)
+    this.el.addEventListener('mouseup', handleMouseUpAndMouseLeave, false)
+    this.el.addEventListener('mouseleave', handleMouseUpAndMouseLeave, false)
+
+    // Listen for keyboard navigation
+    // Shouldn't need to use inProgress interval because of key repeat
+    // this.on('keydown', handleActivity)
+    // this.on('keyup', handleActivity)
+
+    // Run an interval every 250 milliseconds instead of stuffing everything into
+    // the mousemove/touchmove function itself, to prevent performance degradation.
+    // `this.reportUserActivity` simply sets this.userActivity_ to true, which
+    // then gets picked up by this loop
+    // http://ejohn.org/blog/learning-from-twitter/
+    let inactivityTimeout = null
+
+    // 每隔250ms检查一次
+
+    window.setInterval(() => {
+      // Check to see if mouse/touch activity has happened
+      if (!this.userActivity_) {
+        return
+      }
+
+      // Reset the activity tracker
+      this.userActivity_ = false
+
+      // If the user state was inactive, set the state to active
+      this.userActive(true)
+
+      // Clear any existing inactivity timeout to start the timer over
+      if (inactivityTimeout) {
+        window.clearTimeout(inactivityTimeout)
+        inactivityTimeout = null
+      }
+      const timeout = this.cache_.inactivityTimeout
+      if (timeout <= 0) {
+        return
+      }
+      // In <timeout> milliseconds, if no more activity has occurred the
+      // user will be considered inactive
+      inactivityTimeout = window.setTimeout(() => {
+        // Protect against the case where the inactivityTimeout can trigger just
+        // before the next user activity is picked up by the activity check loop
+        // causing a flicker
+        if (!this.userActivity_) {
+          this.userActive(false)
+        }
+      }, timeout)
+    }, 250)
+
+    this.video.removeEventListener('play', this.listenForUserActivity_)
+  }
+
+  /**
+   * Get/set if user is active
+   *
+   * @fires Player#useractive
+   * @fires Player#userinactive
+   *
+   * @param {boolean} [bool]
+   *        - true if the user is active
+   *        - false if the user is inactive
+   *
+   * @return {boolean}
+   *         The current value of userActive when getting
+   */
+  userActive (bool) {
+    if (bool === undefined) {
+      return this.userActive_
+    }
+
+    bool = !!bool
+
+    if (bool === this.userActive_) {
+      return
+    }
+
+    this.userActive_ = bool
+
+    if (this.userActive_) {
+      this.userActivity_ = true
+      DOM.removeClass(this.el, 'typ-user-inactive')
+      DOM.addClass(this.el, 'typ-user-active')
+      return
+    }
+
+    // Chrome/Safari/IE have bugs where when you change the cursor it can
+    // trigger a mousemove event. This causes an issue when you're hiding
+    // the cursor when the user is inactive, and a mousemove signals user
+    // activity. Making it impossible to go into inactive mode. Specifically
+    // this happens in fullscreen when we really need to hide the cursor.
+    //
+    // When this gets resolved in ALL browsers it can be removed
+    // https://code.google.com/p/chromium/issues/detail?id=103041
+    // if (this.tech_) {
+    //   this.tech_.one('mousemove', function (e) {
+    //     e.stopPropagation()
+    //     e.preventDefault()
+    //   })
+    // }
+
+    this.userActivity_ = false
+    DOM.removeClass(this.el, 'typ-user-active')
+    DOM.addClass(this.el, 'typ-user-inactive')
+  }
+
+  /**
+   * Get or set whether or not the controls are showing.
+   *
+   * @fires Player#controlsenabled
+   *
+   * @param {boolean} [bool]
+   *        - true to turn controls on
+   *        - false to turn controls off
+   *
+   * @return {boolean}
+   *         The current value of controls when getting
+   */
+  controls (bool) {
+    if (bool === undefined) {
+      return !!this.controls_
+    }
+    bool = !!bool
+    // Don't trigger a change event unless it actually changed
+    if (this.controls_ === bool) {
+      return
+    }
+    this.controls_ = bool
+
+    if (this.controls_) {
+      DOM.removeClass(this.el, 'typ-controls-disabled')
+      DOM.addClass(this.el, 'typ-controls-enabled')
+    } else {
+      DOM.removeClass(this.el, 'typ-controls-enabled')
+      DOM.addClass(this.el, 'typ-controls-disabled')
+    }
   }
 
   // 点击播放进度条的时候触发，松手的时候恢复。
@@ -232,7 +558,7 @@ class Player {
       }
       // 设置播放器时间
       // this.techCall_('setCurrentTime', seconds)
-      this.player.currentTime = seconds
+      this.video.currentTime = seconds
       this.cache_.initTime = 0
       return
     }
@@ -283,8 +609,49 @@ class Player {
     }
   }
 
+  /**
+   *
+   */
   remainingTime () {
     return this.duration() - this.currentTime()
+  }
+
+  /**
+   * Get a TimeRange object with an array of the times of the video
+   * that have been downloaded. If you just want the percent of the
+   * video that's been downloaded, use bufferedPercent.
+   *
+   * @see [Buffered Spec]{@link http://dev.w3.org/html5/spec/video.html#dom-media-buffered}
+   *
+   * @return {TimeRange}
+   *         A mock TimeRange object (following HTML spec)
+   */
+  buffered () {
+    let buffered = this.video.buffered
+
+    if (!buffered || !buffered.length) {
+      buffered = createTimeRange(0, 0)
+    }
+
+    return buffered
+  }
+
+  /**
+   * Get the ending time of the last buffered time range
+   * This is used in the progress bar to encapsulate all time ranges.
+   *
+   * @return {number}
+   *         The end of the last buffered time range
+   */
+  bufferedEnd () {
+    const buffered = this.buffered()
+    const duration = this.duration()
+    let end = buffered.end(buffered.length - 1)
+
+    if (end > duration) {
+      end = duration
+    }
+    return end
   }
 
   hasStarted (request) {
@@ -303,6 +670,55 @@ class Player {
       // this.trigger('firstplay')
     } else {
       DOM.removeClass(this.el, 'typ-has-started')
+    }
+  }
+
+  /**
+   * Check if the player is in fullscreen mode or tell the player that it
+   * is or is not in fullscreen mode.
+   *
+   * > NOTE: As of the latest HTML5 spec, isFullscreen is no longer an official
+   * property and instead document.fullscreenElement is used. But isFullscreen is
+   * still a valuable property for internal player workings.
+   *
+   * @param  {boolean} [isFS]
+   *         Set the players current fullscreen state
+   *
+   * @return {boolean}
+   *         - true if fullscreen is on and getting
+   *         - false if fullscreen is off and getting
+   */
+  isFullscreen (isFS) {
+    if (isFS !== undefined) {
+      // const oldValue = this.cache_.isFullscreen_
+
+      this.cache_.isFullscreen = Boolean(isFS)
+
+      // if we changed fullscreen state and we're in prefixed mode, trigger fullscreenchange
+      // this is the only place where we trigger fullscreenchange events for older browsers
+      // fullWindow mode is treated as a prefixed event and will get a fullscreenchange event as well
+      // if (this.cache_.isFullscreen_ !== oldValue && this.fsApi_.prefixed) {
+      /**
+           * @event Player#fullscreenchange
+           * @type {EventTarget~Event}
+           */
+      // 回调 全屏change事件
+      // this.trigger('fullscreenchange')
+      // }
+      this.toggleFullscreenClass_()
+      return
+    }
+    return this.cache_.isFullscreen
+  }
+
+  /**
+   * @private
+   */
+  toggleFullscreenClass_ () {
+    if (this.isFullscreen()) {
+      DOM.addClass(this.el, 'typ-fullscreen')
+    } else {
+      DOM.removeClass(this.el, 'typ-fullscreen')
     }
   }
 

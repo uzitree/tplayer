@@ -62,6 +62,11 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "@tulies/event-middleware": "0.0.1",
+    "global": "^4.4.0",
+>>>>>>> dev
     "three": "^0.115.0"
   }
 }
