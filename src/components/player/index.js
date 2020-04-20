@@ -5,6 +5,7 @@
  */
 import * as DOM from '@/utils/dom'
 import ControlBar from './control-bar'
+import LoadingSpinner from './loading-spinner'
 import { createTimeRange } from '@/utils/time-ranges.js'
 import * as Fn from '@/utils/fn.js'
 // import * as browser from '@/utils/browser.js'
@@ -27,6 +28,7 @@ class Player {
     // 绑定监听事件
     this.onVideoEvent()
     this.useConponent(new ControlBar())
+    this.useConponent(new LoadingSpinner())
 
     /** init */
 
@@ -125,7 +127,6 @@ class Player {
     const videoHtml = `
       <div class="tp-constainer">
         <div class="tp-video"><video webkit-playsinline="true" playsinline="true" ></video></div>
-        <div class="tp-loading-spinner"></div>
         <div class="tp-poster"></div>
         <div class="tp-playbtn"></div>
       </div>
